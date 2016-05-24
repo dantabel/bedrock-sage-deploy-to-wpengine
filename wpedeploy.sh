@@ -47,6 +47,62 @@ bedrockThemesDirectory="${presentWorkingDirectory}/web/app/themes/"
 # Perform checks before running script
 ####################
 
+# Functions
+####################
+# return 1 if global command line program installed, else 0
+# example
+# echo "node: $(program_is_installed node)"
+function program_installed_check {
+  # set to 1 initially
+  local return_=1
+  # set to 0 if not found
+  type $1 >/dev/null 2>&1 || { local return_=0; }
+  # return value
+  echo "$return_"
+}
+
+# program is not installed
+function installed_yes {
+  # echo first argument in red
+  printf "\e[31mERROR ${1}"
+  # reset colours back to normal
+  echo "\033[0m"
+}
+
+# program is installed
+function installed_no {
+  # echo first argument in green
+  printf "[\033[31mERROR\e[0m] ${1} not found."
+  # reset colours back to normal
+  echo "\033[0m"
+}
+
+# echo pass or fail
+# example
+# echo echo_if 1 "Passed"
+# echo echo_if 0 "Failed"
+function echo_results {
+  if [ $1 == 1 ]; then
+    installed_yes $2
+  else
+    installed_no $2
+  fi
+}
+
+# Tool checks
+####################
+echo "git $(echo_results $(program_installed_check git))"
+
+# Directory checks
+####################
+# Halt if theme directory does not exist
+if [ ! -d "$presentWorkingDirectory"/web/app/themes/"$themeName" ]; then
+  echo -e "[\033[31mERROR\e[0m] Theme \"$themeName\" not found.\n        Set \033[32mthemeName\e[0m variable in $0 to match your theme in $bedrockThemesDirectory"
+  echo "Available themes:"
+  ls $bedrockThemesDirectory
+  exit 1
+fi
+
 # Git checks
 ####################
 # Halt if there are uncommitted files
@@ -62,16 +118,6 @@ if [ "$?" -ne 0 ]; then
   echo -e "[\033[31mERROR\e[0m] Unknown git remote \"$wpengineRemoteName\"\n        Visit \033[32mhttps://wpengine.com/git/\e[0m to set this up."
   echo "Available remotes:"
   git remote -v
-  exit 1
-fi
-
-# Directory checks
-####################
-# Halt if theme directory does not exist
-if [ ! -d "$presentWorkingDirectory"/web/app/themes/"$themeName" ]; then
-  echo -e "[\033[31mERROR\e[0m] Theme \"$themeName\" not found.\n        Set \033[32mthemeName\e[0m variable in $0 to match your theme in $bedrockThemesDirectory"
-  echo "Available themes:"
-  ls $bedrockThemesDirectory
   exit 1
 fi
 
