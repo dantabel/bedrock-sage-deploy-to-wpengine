@@ -1,3 +1,12 @@
+# N.B.
+This is a fork of the repo mentioned below with some minor changes. I have just modified it so that it can be used from [Bedrock](https://roots.io/bedrock/)'s parent dir with Bedrock in a dir called `site` instead of the Bedrock root dir. This is useful for when being used with [Trellis](https://roots.io/trellis/) and your git root is one dir up.
+
+I have also made the Sage theme optional. Set `themeName=""` if you are not using a Sage theme and all Sage related tasks will be ignored.
+
+Updated 2016-08-26
+
+----------------------
+
 # Deploy Bedrock+Sage WordPress project to WP Engine hosting platform
 
 Last tested: May 22, 2016
